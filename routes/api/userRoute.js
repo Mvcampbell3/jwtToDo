@@ -1,9 +1,13 @@
 const router = require("express").Router();
-const bcrypt = require("bcrypt");
+const checkAuth = require("../../middleware/check-auth")
+const UserController = require("../../controllers/user")
 
+router.get("/test", UserController.user_test)
 
-router.get("/test", (req,res) => {
-  res.json("working here at api/user/test");
-})
+router.post("/signup", UserController.user_signup)
+
+router.post("/login", UserController.user_login)
+
+router.get("/checkauth", checkAuth, UserController.user_checkAuth)
 
 module.exports = router;
