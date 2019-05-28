@@ -17,7 +17,7 @@ if (process.env.NODE_ENV === "production") {
 app.use(routes)
 
 // Change DB name here
-const dbase = "playground";
+const dbase = "jwtToDo";
 
 mongoose
   .connect(process.env.MONGODB_URI || `mongodb://localhost/${dbase}`, { useNewUrlParser: true })
