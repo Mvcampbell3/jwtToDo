@@ -77,10 +77,13 @@ exports.user_login = (req, res, next) => {
 
 exports.user_checkAuth = (req, res, next) => {
   const user = req.user
-  res.status(200).json({
-    message: "logged in",
-    user,
-  })
+  User.findById(user.userID)
+    .populate("taskIDs", "name isCompleted")
+    .exec()
+    .then(result => {
+      res.status(200).json(result)
+    })
+    .catch(err => res.status(500).json(err))
 }
 
 exports.user_delete_users = (req, res, next) => {

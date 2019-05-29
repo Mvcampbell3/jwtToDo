@@ -53,17 +53,19 @@ class App extends Component {
         if (!this.state.user) {
           this.setState({
             user: true,
-            userID: result.data.user.userID,
-            username: result.data.user.username,
-            tasks: result.data.user.taskIDs
+            userID: result.data.userID,
+            username: result.data.username,
+            tasks: result.data.taskIDs
           })
         }
       })
       .catch(err => {
         if (this.state.user) {
           this.setState({ user: false })
+          console.log(err)
         }
         console.log({ user: false });
+        console.log(err)
       })
   }
 
