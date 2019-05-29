@@ -24,7 +24,8 @@ exports.user_signup = (req, res, next) => {
       .then(result => {
         console.log(result);
         res.status(201).json({
-          message: "User Created"
+          message: "User Created",
+          success: true
         })
       })
       .catch(err => res.status(500).json(err))
@@ -41,17 +42,24 @@ exports.user_login = (req, res, next) => {
           })
         }
         if (result === true) {
-          jwt.sign({ username: user.username }, process.env.JWT_KEY, { expiresIn: "1h" }, (err, token) => {
-            if (err) {
-              return res.status(401).json({
-                message: "Auth failed"
+          jwt.sign(
+            // payload of the token
+            {
+              username: user.username,
+              userID: user._id,
+              taskIDs: user.taskIDs
+            },
+            process.env.JWT_KEY, { expiresIn: "1h" }, (err, token) => {
+              if (err) {
+                return res.status(401).json({
+                  message: "Auth failed"
+                })
+              }
+              return res.status(200).json({
+                message: "Auth succeeded",
+                token
               })
-            }
-            return res.status(200).json({
-              message: "Auth succeeded",
-              token
-            })
-          });
+            });
 
         } else {
           return res.status(401).json({
@@ -70,7 +78,14 @@ exports.user_login = (req, res, next) => {
 exports.user_checkAuth = (req, res, next) => {
   const user = req.user
   res.status(200).json({
-    message: "it worked",
+    message: "logged in",
     user,
   })
 }
+
+exports.user_delete_users = (req, res, next) => {
+  User.remove()
+    .then(result => res.status(200).json(result))
+    .catch(err => res.status(500).json(err))
+}
+

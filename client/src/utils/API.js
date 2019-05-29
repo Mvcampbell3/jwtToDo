@@ -1,10 +1,13 @@
 import Axios from "axios";
 
-
-
 export default {
+
+  signupUser(username, password) {
+    return Axios.post("/api/user/signup", {username, password});
+  },
+
   loginUser(username, password) {
-    return Axios.post("/api/user/login", { username, password })
+    return Axios.post("/api/user/login", { username, password });
   },
 
   checkAuth() {
@@ -13,7 +16,9 @@ export default {
         Authorization: "Bearer " + localStorage.getItem("token")
       }
     })
-  }
+  },
 
-  
+  deleteAll() {
+    return Axios.delete("/api/user/deleteall");
+  }
 }

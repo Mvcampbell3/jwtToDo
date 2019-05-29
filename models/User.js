@@ -10,7 +10,12 @@ const UserSchema = new Schema({
   password: {
     type: String,
     required: true
-  }
+  },
+
+  taskIDs: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Task"
+  }]
 })
 
 module.exports = User = mongoose.model("User", UserSchema);
