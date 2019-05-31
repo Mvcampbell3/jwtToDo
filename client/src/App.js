@@ -1,11 +1,12 @@
 import React, { Component } from "react";
 import "./App.css";
 import API from "./utils/API";
-import jwt from "jsonwebtoken";
 
 // Components
 import Login from "./components/Login"
 import Signup from "./components/Signup"
+import SubTask from "./components/SubTask"
+import Task from "./components/Task"
 
 class App extends Component {
   state = {
@@ -13,6 +14,7 @@ class App extends Component {
     password: "",
     user: false,
     userID: "",
+    name: "",
     tasks: []
   }
 
@@ -36,9 +38,7 @@ class App extends Component {
         console.log(result.data);
         const token = result.data.token;
         localStorage.setItem("token", token)
-        const decoded = jwt.decode(token)
-        console.log(decoded);
-        this.setState({ user: true, userID: decoded.userID, password: "", tasks: decoded.taskIDs })
+        this.checkAuth()
       })
       .catch(err => console.log(err));
   }
@@ -50,22 +50,23 @@ class App extends Component {
     API.checkAuth()
       .then(result => {
         console.log(result.data)
-        if (!this.state.user) {
+        if (result.data.user) {
           this.setState({
             user: true,
-            userID: result.data.userID,
-            username: result.data.username,
-            tasks: result.data.taskIDs
+            userID: result.data.userAll._id,
+            username: result.data.userAll.username,
+            tasks: result.data.userAll.tasks
           })
+
         }
       })
       .catch(err => {
         if (this.state.user) {
           this.setState({ user: false })
-          console.log(err)
+          // console.log(err)
         }
         console.log({ user: false });
-        console.log(err)
+        // console.log(err)
       })
   }
 
@@ -87,10 +88,50 @@ class App extends Component {
     this.setState({ [e.target.name]: e.target.value })
   }
 
+  submitTask = e => {
+    e.preventDefault();
+    API.submitTask(this.state.name)
+      .then(newTask => {
+        console.log(newTask);
+        this.setState({ name: "" })
+        this.updateTasksState();
+      })
+      .catch(err => console.log(err))
+  }
+
+  changeComplete = e => {
+    e.preventDefault();
+    API.changeComplete(e.target.dataset.task_id)
+      .then(result => {
+        console.log(result)
+        this.setState({ tasks: result.data })
+      })
+      .catch(err => console.log(err));
+  }
+
+  updateTasksState = () => {
+    API.updateTasks(this.state.userID)
+      .then(result => {
+        console.log(result)
+        this.setState({ tasks: result.data })
+      })
+      .catch(err => console.log(err));
+  }
+
+  deleteTask = e => {
+    e.preventDefault();
+    API.deleteTask(e.target.dataset.task_id)
+      .then(result => {
+        console.log(result.data[0].tasks)
+        // this.setState({ tasks: result.data[0].tasks })
+        this.updateTasksState()
+      })
+      .catch(err => console.log(err))
+  }
+
   render() {
     return (
       <div style={{ width: "80%", margin: "1em auto" }}>
-        <button onClick={e => this.loginUser(e)}>Test</button>
         <button onClick={e => this.checkAuth(e)}>Check</button>
         <button onClick={e => this.logout(e)}>Logout</button>
         <button onClick={e => this.deleteAllUsers(e)}>Delete Users</button>
@@ -112,6 +153,17 @@ class App extends Component {
             />
           </div>
         }
+        {this.state.user ? <SubTask name={this.state.name} handleInput={this.handleInput} submitTask={this.submitTask} /> : null}
+        {this.state.tasks.length > 0 ? this.state.tasks.map(task => (
+          <Task
+            taskID={task._id}
+            name={task.name}
+            isComplete={task.isCompleted}
+            changeComplete={this.changeComplete}
+            key={task._id}
+            deleteTask={this.deleteTask}
+          />
+        )) : null}
 
       </div>
     );

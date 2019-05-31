@@ -34,6 +34,7 @@ exports.user_signup = (req, res, next) => {
 
 exports.user_login = (req, res, next) => {
   User.findOne({ username: req.body.username })
+    .exec()
     .then(user => {
       bcrypt.compare(req.body.password, user.password, (err, result) => {
         if (err) {
@@ -47,7 +48,7 @@ exports.user_login = (req, res, next) => {
             {
               username: user.username,
               userID: user._id,
-              taskIDs: user.taskIDs
+              tasks: user.tasks
             },
             process.env.JWT_KEY, { expiresIn: "1h" }, (err, token) => {
               if (err) {
@@ -78,12 +79,12 @@ exports.user_login = (req, res, next) => {
 exports.user_checkAuth = (req, res, next) => {
   const user = req.user
   User.findById(user.userID)
-    .populate("taskIDs", "name isCompleted")
+    .populate("tasks", "name isCompleted")
     .exec()
-    .then(result => {
-      res.status(200).json(result)
+    .then(userAll => {
+      res.status(200).json({userAll, user: true})
     })
-    .catch(err => res.status(500).json(err))
+    .catch(err => res.status(500).json({user:false}))
 }
 
 exports.user_delete_users = (req, res, next) => {
