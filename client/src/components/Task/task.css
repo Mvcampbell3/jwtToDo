@@ -1,0 +1,33 @@
+.task{
+  background-color: white;
+  color: steelblue;
+  padding: 5px;
+  display: grid;
+  justify-content: space-between;
+  grid-template-columns: 5fr 1fr;
+  margin-bottom: 1em;
+  min-height: 60px;
+  border-radius: 13px;
+  align-items: center;
+}
+
+.taskBtnGroup{
+  padding: 3px;
+  display: flex;
+  align-items: center;
+  width: fit-content;
+  margin-left: auto;
+}
+
+.fa-times-circle{
+  margin-left: 5px;
+  color: red;
+}
+
+.comp{
+  color: darkblue;
+}
+
+.notComp{
+  color: green;
+}

@@ -11,5 +11,35 @@ body{
   background-image: url("https://images.pexels.com/photos/1843717/pexels-photo-1843717.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260");
   background-attachment: fixed;
   background-size: cover;
-  
 }
+
+i {
+  cursor: pointer;
+}
+
+header{
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto 2em auto;
+  padding: 20px;
+  background-color: steelblue;
+  color: white;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.main{
+  max-width: 500px;
+  background-color: steelblue;
+  color: white;
+  padding: 20px;
+  margin: auto;
+}
+
+.mainGrid{
+  width: 100%;
+}
+
+
+

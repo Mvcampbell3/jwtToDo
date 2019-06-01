@@ -133,13 +133,11 @@ class App extends Component {
   render() {
     return (
       <div>
-        {/* <button onClick={e => this.checkAuth(e)}>Check</button>
-        <button onClick={e => this.deleteAllUsers(e)}>Delete Users</button> */}
-        {this.state.user ? <div>
+        {this.state.user ? <header className="mainHeader">
           <h1 style={{ textTransform: "capitalize" }}>Welcome {this.state.username}</h1>
           <button onClick={e => this.logout(e)}>Logout</button>
 
-        </div> : <div>
+        </header> : <div>
             <UserArea
               user={this.state.user}
               username={this.state.username}
@@ -153,18 +151,21 @@ class App extends Component {
 
           </div>
         }
-        {this.state.user ? <SubTask name={this.state.name} handleInput={this.handleInput} submitTask={this.submitTask} /> : null}
-        {this.state.tasks.length > 0 ? this.state.tasks.map(task => (
-          <Task
-            taskID={task._id}
-            name={task.name}
-            isComplete={task.isCompleted}
-            changeComplete={this.changeComplete}
-            key={task._id}
-            deleteTask={this.deleteTask}
-          />
-        )) : null}
-
+        <div className="main">
+          {this.state.user ? <SubTask name={this.state.name} handleInput={this.handleInput} submitTask={this.submitTask} /> : null}
+          <div className="mainGrid">
+            {this.state.tasks.length > 0 ? this.state.tasks.map(task => (
+              <Task
+                taskID={task._id}
+                name={task.name}
+                isComplete={task.isCompleted}
+                changeComplete={this.changeComplete}
+                key={task._id}
+                deleteTask={this.deleteTask}
+              />
+            )) : null}
+          </div>
+        </div>
       </div>
     );
   }
