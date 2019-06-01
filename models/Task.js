@@ -20,9 +20,16 @@ const TaskSchema = new Schema({
   }
 })
 
-// TaskSchema.pre("remove", { query: true }, (next) => {
-//   console.log("removing document")
-//   console.log(this)
-// })
+TaskSchema.pre("remove", { query: true }, function(next) {
+  console.log(this)
+  User.findByIdAndUpdate(this.userID, { $pull: { tasks: this._id } }, {new: true})
+    .then(result => {
+      next()
+    })
+    .catch(err => {
+      console.log(err);
+      next(err)
+    })
+})
 
 module.exports = Task = mongoose.model("Task", TaskSchema)

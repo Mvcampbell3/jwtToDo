@@ -122,9 +122,11 @@ class App extends Component {
     e.preventDefault();
     API.deleteTask(e.target.dataset.task_id)
       .then(result => {
-        console.log(result.data[0].tasks)
+        // console.log(result.data[0].tasks)
         // this.setState({ tasks: result.data[0].tasks })
-        this.updateTasksState()
+        // this.updateTasksState()
+        console.log(result)
+        this.updateTasksState();
       })
       .catch(err => console.log(err))
   }
