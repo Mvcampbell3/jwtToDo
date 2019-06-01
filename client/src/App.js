@@ -3,10 +3,9 @@ import "./App.css";
 import API from "./utils/API";
 
 // Components
-import Login from "./components/Login"
-import Signup from "./components/Signup"
 import SubTask from "./components/SubTask"
 import Task from "./components/Task"
+import UserArea from "./components/UserArea"
 
 class App extends Component {
   state = {
@@ -15,7 +14,8 @@ class App extends Component {
     user: false,
     userID: "",
     name: "",
-    tasks: []
+    tasks: [],
+    signup: false
   }
 
   componentDidMount() {
@@ -57,16 +57,13 @@ class App extends Component {
             username: result.data.userAll.username,
             tasks: result.data.userAll.tasks
           })
-
         }
       })
       .catch(err => {
         if (this.state.user) {
           this.setState({ user: false })
-          // console.log(err)
         }
         console.log({ user: false });
-        // console.log(err)
       })
   }
 
@@ -122,37 +119,38 @@ class App extends Component {
     e.preventDefault();
     API.deleteTask(e.target.dataset.task_id)
       .then(result => {
-        // console.log(result.data[0].tasks)
-        // this.setState({ tasks: result.data[0].tasks })
-        // this.updateTasksState()
         console.log(result)
         this.updateTasksState();
       })
       .catch(err => console.log(err))
   }
 
+  switchSignup = e => {
+    e.preventDefault();
+    this.setState({ signup: !this.state.signup })
+  }
+
   render() {
     return (
-      <div style={{ width: "80%", margin: "1em auto" }}>
-        <button onClick={e => this.checkAuth(e)}>Check</button>
-        <button onClick={e => this.logout(e)}>Logout</button>
-        <button onClick={e => this.deleteAllUsers(e)}>Delete Users</button>
+      <div>
+        {/* <button onClick={e => this.checkAuth(e)}>Check</button>
+        <button onClick={e => this.deleteAllUsers(e)}>Delete Users</button> */}
         {this.state.user ? <div>
           <h1 style={{ textTransform: "capitalize" }}>Welcome {this.state.username}</h1>
+          <button onClick={e => this.logout(e)}>Logout</button>
+
         </div> : <div>
-            <Login
+            <UserArea
+              user={this.state.user}
               username={this.state.username}
               password={this.state.password}
               handleInput={this.handleInput}
               loginUser={this.loginUser}
-            />
-            <hr />
-            <Signup
-              username={this.state.username}
-              password={this.state.password}
-              handleInput={this.handleInput}
               signupUser={this.signupUser}
+              signup={this.state.signup}
+              switchSignup={this.switchSignup}
             />
+
           </div>
         }
         {this.state.user ? <SubTask name={this.state.name} handleInput={this.handleInput} submitTask={this.submitTask} /> : null}
