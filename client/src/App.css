@@ -11,6 +11,7 @@ body{
   background-image: url("https://images.pexels.com/photos/1843717/pexels-photo-1843717.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260");
   background-attachment: fixed;
   background-size: cover;
+  font-family: sans-serif;
 }
 
 i {
@@ -20,13 +21,30 @@ i {
 header{
   width: 100%;
   max-width: 500px;
-  margin: 0 auto 2em auto;
+  margin: 1em auto 2em auto;
   padding: 20px;
   background-color: steelblue;
   color: white;
   display: flex;
   justify-content: space-around;
+  border-radius: 13px;
   align-items: center;
+}
+
+.logout{
+  border-radius: 13px;
+  border: 2px white solid;
+  background-color: steelblue;
+  color: white;
+  padding: 5px;
+  cursor: pointer;
+}
+
+.logout:hover{
+  /* border: 2px black solid; */
+  background-color: white;
+  color: steelblue;
+  transform: scale(1.1)
 }
 
 .main{
@@ -35,10 +53,15 @@ header{
   color: white;
   padding: 20px;
   margin: auto;
+  border-radius: 13px;
+  height: fit-content;
+  transition: all, .25s;
 }
 
 .mainGrid{
   width: 100%;
+  transition: all, .25s;
+
 }
 
 

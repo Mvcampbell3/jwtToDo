@@ -27,6 +27,7 @@ class App extends Component {
     API.signupUser(this.state.username, this.state.password)
       .then(result => {
         console.log(result)
+        this.setState({signup: false});
       })
       .catch(err => console.log(err));
   }
@@ -125,9 +126,33 @@ class App extends Component {
       .catch(err => console.log(err))
   }
 
+  deleteTaskAnimation = taskID => {
+    API.deleteTask(taskID)
+      .then(result => {
+        console.log(result)
+        this.updateTasksState();
+      })
+      .catch(err => console.log(err))
+  }
+
   switchSignup = e => {
     e.preventDefault();
     this.setState({ signup: !this.state.signup })
+  }
+
+  testScrollUp = e => {
+    e.preventDefault();
+    const task = document.getElementById(e.target.dataset.parent_id);
+    const taskBtn = document.getElementById(`btn${e.target.dataset.parent_id}`)
+    task.classList.add("taskLeave");
+    taskBtn.style.display = "none"
+    const deleteTaskInside = this.deleteTaskAnimation;
+    const taskID = e.target.dataset.task_id;
+
+    setTimeout(function() {
+      task.style.display = "none"
+      deleteTaskInside(taskID)
+    }, 1000)
   }
 
   render() {
@@ -135,8 +160,7 @@ class App extends Component {
       <div>
         {this.state.user ? <header className="mainHeader">
           <h1 style={{ textTransform: "capitalize" }}>Welcome {this.state.username}</h1>
-          <button onClick={e => this.logout(e)}>Logout</button>
-
+          <button className="logout" onClick={e => this.logout(e)}>Logout</button>
         </header> : <div>
             <UserArea
               user={this.state.user}
@@ -151,21 +175,24 @@ class App extends Component {
 
           </div>
         }
-        <div className="main">
-          {this.state.user ? <SubTask name={this.state.name} handleInput={this.handleInput} submitTask={this.submitTask} /> : null}
-          <div className="mainGrid">
-            {this.state.tasks.length > 0 ? this.state.tasks.map(task => (
-              <Task
-                taskID={task._id}
-                name={task.name}
-                isComplete={task.isCompleted}
-                changeComplete={this.changeComplete}
-                key={task._id}
-                deleteTask={this.deleteTask}
-              />
-            )) : null}
+        {this.state.user ?
+          <div className="main">
+            {this.state.user ? <SubTask name={this.state.name} handleInput={this.handleInput} submitTask={this.submitTask} /> : null}
+            <div className="mainGrid">
+              {this.state.tasks.length > 0 ? this.state.tasks.map(task => (
+                <Task
+                  taskID={task._id}
+                  name={task.name}
+                  isComplete={task.isCompleted}
+                  changeComplete={this.changeComplete}
+                  key={task._id}
+                  deleteTask={this.deleteTask}
+                  testScrollUp={this.testScrollUp}
+                />
+              )) : null}
+            </div>
           </div>
-        </div>
+          : null}
       </div>
     );
   }
