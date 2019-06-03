@@ -24,30 +24,42 @@ class App extends Component {
 
   signupUser = e => {
     e.preventDefault();
-    API.signupUser(this.state.username, this.state.password)
-      .then(result => {
-        console.log(result)
-        this.loginUser();
-      })
-      .catch(err => {
-        console.log(err);
-        alert("Username already in use");
-        this.setState({username:"", password:""})
-      });
+    if (this.state.username.trim() !== "" && this.state.password !== "") {
+      API.signupUser(this.state.username.trim(), this.state.password.trim())
+        .then(result => {
+          console.log(result)
+          this.loginUser();
+        })
+        .catch(err => {
+          console.log(err);
+          alert("Username already in use");
+          this.setState({ username: "", password: "" })
+        });
+    } else {
+      alert("Please enter username and password")
+    }
+
   }
 
   loginUser = e => {
     if (e) {
       e.preventDefault();
     }
-    API.loginUser(this.state.username, this.state.password)
-      .then(result => {
-        console.log(result.data);
-        const token = result.data.token;
-        localStorage.setItem("token", token)
-        this.checkAuth()
-      })
-      .catch(err => console.log(err));
+    if (this.state.username.trim() !== "" && this.state.password !== "") {
+      API.loginUser(this.state.username, this.state.password)
+        .then(result => {
+          // console.log(result.data);
+          const token = result.data.token;
+          localStorage.setItem("token", token)
+          this.checkAuth()
+        })
+        .catch(err => {
+          console.log(err);
+          alert("Login was unsuccessful, please check username and password and try again")
+        });
+    } else {
+      alert("Please enter a username and password")
+    }
   }
 
   checkAuth = e => {
@@ -56,7 +68,7 @@ class App extends Component {
     }
     API.checkAuth()
       .then(result => {
-        console.log(result.data)
+        // console.log(result.data)
         if (result.data.user) {
           this.setState({
             user: true,
@@ -71,7 +83,7 @@ class App extends Component {
         if (this.state.user) {
           this.setState({ user: false })
         }
-        console.log({ user: false });
+        // console.log({ user: false });
       })
   }
 
@@ -79,7 +91,7 @@ class App extends Component {
     e.preventDefault();
     localStorage.removeItem("token");
     this.setState({ user: false, username: "", password: "", tasks: [] })
-    console.log({ user: false })
+    // console.log({ user: false })
   }
 
   deleteAllUsers = e => {
@@ -95,20 +107,26 @@ class App extends Component {
 
   submitTask = e => {
     e.preventDefault();
-    API.submitTask(this.state.name)
-      .then(newTask => {
-        console.log(newTask);
-        this.setState({ name: "" })
-        this.updateTasksState();
-      })
-      .catch(err => console.log(err))
+    if (this.state.name.trim() !== "") {
+      API.submitTask(this.state.name)
+        .then(newTask => {
+          // console.log(newTask);
+          this.setState({ name: "" })
+          this.updateTasksState();
+        })
+        .catch(err => console.log(err))
+    } else {
+      alert("Please enter information for task");
+      this.setState({ name: "" })
+    }
+
   }
 
   changeComplete = e => {
     e.preventDefault();
     API.changeComplete(e.target.dataset.task_id)
       .then(result => {
-        console.log(result)
+        // console.log(result)
         this.setState({ tasks: result.data })
       })
       .catch(err => console.log(err));
@@ -117,7 +135,7 @@ class App extends Component {
   updateTasksState = () => {
     API.updateTasks(this.state.userID)
       .then(result => {
-        console.log(result)
+        // console.log(result)
         this.setState({ tasks: result.data })
       })
       .catch(err => console.log(err));
@@ -127,7 +145,7 @@ class App extends Component {
     e.preventDefault();
     API.deleteTask(e.target.dataset.task_id)
       .then(result => {
-        console.log(result)
+        // console.log(result)
         this.updateTasksState();
       })
       .catch(err => console.log(err))
@@ -136,7 +154,7 @@ class App extends Component {
   deleteTaskAnimation = taskID => {
     API.deleteTask(taskID)
       .then(result => {
-        console.log(result)
+        // console.log(result)
         this.updateTasksState();
       })
       .catch(err => console.log(err))
