@@ -11,25 +11,38 @@ exports.user_test = (req, res, next) => {
 }
 
 exports.user_signup = (req, res, next) => {
-  bcrypt.hash(req.body.password, 10, (err, hash) => {
-    if (err) {
-      return res.status(500).json(err)
-    }
-    const newUser = new User({
-      username: req.body.username,
-      password: hash
-    });
+  User.findOne({ username: req.body.username })
+    .then(prevUsers => {
+      console.log(prevUsers);
+      if (!prevUsers) {
+        bcrypt.hash(req.body.password, 10, (err, hash) => {
+          if (err) {
+            return res.status(500).json(err)
+          }
+          const newUser = new User({
+            username: req.body.username,
+            password: hash
+          });
 
-    newUser.save()
-      .then(result => {
-        console.log(result);
-        res.status(201).json({
-          message: "User Created",
-          success: true
+          newUser.save()
+            .then(result => {
+              console.log(result);
+              res.status(201).json({
+                message: "User Created",
+                success: true
+              })
+            })
+            .catch(err => res.status(500).json({err}))
         })
-      })
-      .catch(err => res.status(500).json(err))
-  })
+      } else {
+        // throw new Error("username already exists")
+        res.status(422).send({error:"username already exists"})
+        
+      }
+    })
+    .catch(err => console.log(err));
+
+
 }
 
 exports.user_login = (req, res, next) => {
@@ -82,9 +95,9 @@ exports.user_checkAuth = (req, res, next) => {
     .populate("tasks", "name isCompleted")
     .exec()
     .then(userAll => {
-      res.status(200).json({userAll, user: true})
+      res.status(200).json({ userAll, user: true })
     })
-    .catch(err => res.status(500).json({user:false}))
+    .catch(err => res.status(500).json({ user: false }))
 }
 
 exports.user_delete_users = (req, res, next) => {

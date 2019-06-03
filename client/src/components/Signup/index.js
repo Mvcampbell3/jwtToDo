@@ -15,7 +15,7 @@ const Signup = (props) => {
       </div>
       <div className="buttonArea">
         <button className="logBtn sign" type="button" onClick={e => props.signupUser(e)}>Signup</button>
-        <button className="logBtn sign" type="button" onClick={e => props.switchSignup(e)}>To Login</button>
+        <button className="logBtn sign" type="button" onClick={e => props.switchSignup(e)}>Back To Login</button>
       </div>
 
     </div>

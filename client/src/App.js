@@ -27,13 +27,19 @@ class App extends Component {
     API.signupUser(this.state.username, this.state.password)
       .then(result => {
         console.log(result)
-        this.setState({signup: false});
+        this.loginUser();
       })
-      .catch(err => console.log(err));
+      .catch(err => {
+        console.log(err);
+        alert("Username already in use");
+        this.setState({username:"", password:""})
+      });
   }
 
   loginUser = e => {
-    e.preventDefault();
+    if (e) {
+      e.preventDefault();
+    }
     API.loginUser(this.state.username, this.state.password)
       .then(result => {
         console.log(result.data);
@@ -56,7 +62,8 @@ class App extends Component {
             user: true,
             userID: result.data.userAll._id,
             username: result.data.userAll.username,
-            tasks: result.data.userAll.tasks
+            tasks: result.data.userAll.tasks,
+            signup: false
           })
         }
       })
